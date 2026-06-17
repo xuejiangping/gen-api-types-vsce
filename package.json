@@ -7,7 +7,7 @@
   "repository": {
     "url": "https://github.com/xuejiangping/gen-api-types-vsce.git"
   },
-  "publisher": "your-publisher-name",
+  "publisher": "xuejiangping",
   "engines": {
     "vscode": "^1.70.0",
     "node": ">=20.0.0"
