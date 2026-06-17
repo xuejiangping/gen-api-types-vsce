@@ -1,6 +1,6 @@
 # Gen API Types VS Code
 
-`gen-api-types-vsce` 是 [`gen-api-types`](https://github.com/xuejiangping/gen-api-types) 的 VS Code 辅助插件。
+`gen-api-types-vsce` 是 [gen-api-types](https://github.com/xuejiangping/gen-api-types) 的 VS Code 辅助插件。
 
 它不内置 CLI，也不替代 `gen-api-types` 本身；插件的主要作用是把原本需要手写的命令参数整理成 VS Code 右键操作，方便在业务项目中快速生成 API 返回类型。
 
@@ -41,14 +41,14 @@ node_modules/.bin/gen-api-types
 1. 在业务项目中按 `gen-api-types` 文档给 API 类和静态方法添加装饰器：
 
 ```ts
-import { gen_type_c, gen_type_m } from 'gen-api-types';
+import { gen_type_c, gen_type_m } from 'gen-api-types'
 
 @gen_type_c()
 export class UserApi {
-  @gen_type_m({ args: [1], typeName: 'Response_UserApi_getUser' })
-  static async getUser(id: number): Promise<Response_UserApi_getUser> {
-    return fetch(`/api/user/${id}`).then(res => res.json());
-  }
+	@gen_type_m({ args: [1], typeName: 'Response_UserApi_getUser' })
+	static async getUser(id: number): Promise<Response_UserApi_getUser> {
+		return fetch(`/api/user/${id}`).then(res => res.json())
+	}
 }
 ```
 
@@ -73,21 +73,21 @@ gen-api-types \
 
 ```json
 {
-  "gen-api-types.projectRoot": "",
-  "gen-api-types.outputFile": "api-types.d.ts",
-  "gen-api-types.outputDir": "",
-  "gen-api-types.tsConfigPath": "",
-  "gen-api-types.isExported": false
+	"gen-api-types.projectRoot": "",
+	"gen-api-types.outputFile": "api-types.d.ts",
+	"gen-api-types.outputDir": "",
+	"gen-api-types.tsConfigPath": "",
+	"gen-api-types.isExported": false
 }
 ```
 
-| 配置项 | 对应 CLI 参数 | 默认行为 |
-| --- | --- | --- |
-| `gen-api-types.projectRoot` | `-r, --project_root` | 当前 TS 文件所在 workspace 根目录 |
-| `gen-api-types.outputFile` | `-O, --output_file` | `api-types.d.ts` |
-| `gen-api-types.outputDir` | `-o, --output_dir` | 当前 TS 文件所在目录 |
-| `gen-api-types.tsConfigPath` | `-t, --ts_config_path` | 不传，由 CLI 使用自身默认值 |
-| `gen-api-types.isExported` | `--isExported` | `false` |
+| 配置项                       | 对应 CLI 参数          | 默认行为                          |
+| ---------------------------- | ---------------------- | --------------------------------- |
+| `gen-api-types.projectRoot`  | `-r, --project_root`   | 当前 TS 文件所在 workspace 根目录 |
+| `gen-api-types.outputFile`   | `-O, --output_file`    | `api-types.d.ts`                  |
+| `gen-api-types.outputDir`    | `-o, --output_dir`     | 当前 TS 文件所在目录              |
+| `gen-api-types.tsConfigPath` | `-t, --ts_config_path` | 不传，由 CLI 使用自身默认值       |
+| `gen-api-types.isExported`   | `--isExported`         | `false`                           |
 
 相对路径会基于 `projectRoot` 解析。
 
