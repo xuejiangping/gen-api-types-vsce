@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "icon": "images/icon.png",
   "repository": {
-    "url": "https://github.com/your-name/vscode-extension-webview-template.git"
+    "url": "https://github.com/xuejiangping/gen-api-types-vsce.git"
   },
   "publisher": "your-publisher-name",
   "engines": {
@@ -69,7 +69,7 @@
         "gen-api-types.outputDir": {
           "type": "string",
           "default": "",
-          "description": "传给 gen-api-types 的 -o/--output_dir 输出目录。留空时使用项目根目录。"
+          "description": "传给 gen-api-types 的 -o/--output_dir 输出目录。留空时使用当前 TypeScript 文件所在目录。"
         },
         "gen-api-types.tsConfigPath": {
           "type": "string",
