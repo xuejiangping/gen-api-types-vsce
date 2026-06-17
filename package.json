@@ -2,7 +2,7 @@
   "name": "gen-api-types-vsce",
   "displayName": "Gen API Types",
   "description": "在 VS Code 中调用 gen-api-types 生成 API 返回类型。",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "icon": "images/icon.png",
   "repository": {
     "url": "https://github.com/xuejiangping/gen-api-types-vsce.git"
