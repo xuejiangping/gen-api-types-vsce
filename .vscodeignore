@@ -22,6 +22,3 @@ webview/*.yaml
 !webview/dist/**
 
 *.env
-
-!node_modules/gen-api-types/src/**/*.ts
-!node_modules/gen-api-types/tsconfig.json

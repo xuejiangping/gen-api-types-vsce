@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      gen-api-types:
-        specifier: ^1.0.13
-        version: 1.0.13
     devDependencies:
       '@types/node':
         specifier: 20.x
@@ -1232,10 +1228,6 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
-  gen-api-types@1.0.13:
-    resolution: {integrity: sha512-FNsgSj4yavdvsDJjRlNrFn38xrfxuEeqEBlUrCKH/dhldVo6f8vssZhOs34t+aL+vW8TmPbpkb2xUXlZm3dEDw==}
-    hasBin: true
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -3716,12 +3708,6 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
-
-  gen-api-types@1.0.13:
-    dependencies:
-      reflect-metadata: 0.2.2
-      ts-morph: 27.0.2
-      tsx: 4.22.4
 
   get-caller-file@2.0.5: {}
 

@@ -14,12 +14,6 @@ type GenApiTypesConfig = {
   isExported?: boolean;
 };
 
-type CliCommand = {
-  command: string;
-  prefixArgs: string[];
-  env?: NodeJS.ProcessEnv;
-};
-
 function resolvePathOption(value: string | undefined, baseDir: string) {
   if (!value) {
     return undefined;
@@ -36,39 +30,12 @@ function getWorkspaceRoot(targetUri: vscode.Uri) {
   return vscode.workspace.getWorkspaceFolder(targetUri)?.uri.fsPath ?? path.dirname(targetUri.fsPath);
 }
 
-function getCliPath(context: vscode.ExtensionContext) {
-  return path.join(context.extensionPath, 'node_modules', 'gen-api-types', 'bin', 'index.js');
-}
-
 function getWorkspaceCliPath(projectRoot: string) {
   return path.join(projectRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'gen-api-types.cmd' : 'gen-api-types');
 }
 
-function getNpxCommand() {
-  return process.platform === 'win32' ? 'npx.cmd' : 'npx';
-}
-
-function getCliCommand(context: vscode.ExtensionContext, projectRoot: string): CliCommand {
-  const workspaceCliPath = getWorkspaceCliPath(projectRoot);
-  if (fs.existsSync(workspaceCliPath)) {
-    return { command: workspaceCliPath, prefixArgs: [] };
-  }
-
-  const extensionCliPath = getCliPath(context);
-  if (fs.existsSync(extensionCliPath)) {
-    return {
-      command: process.execPath,
-      prefixArgs: [extensionCliPath],
-      env: {
-        ELECTRON_RUN_AS_NODE: '1'
-      }
-    };
-  }
-
-  return {
-    command: getNpxCommand(),
-    prefixArgs: ['--yes', 'gen-api-types@^1.0.13']
-  };
+function getOutputDir(config: GenApiTypesConfig, projectRoot: string, apiDir: string) {
+  return resolvePathOption(config.outputDir, projectRoot) ?? apiDir;
 }
 
 function buildArgs(config: GenApiTypesConfig, projectRoot: string, apiDir: string) {
@@ -78,10 +45,7 @@ function buildArgs(config: GenApiTypesConfig, projectRoot: string, apiDir: strin
     args.push('--output_file', config.outputFile);
   }
 
-  const outputDir = resolvePathOption(config.outputDir, projectRoot);
-  if (outputDir) {
-    args.push('--output_dir', outputDir);
-  }
+  args.push('--output_dir', getOutputDir(config, projectRoot, apiDir));
 
   const tsConfigPath = resolvePathOption(config.tsConfigPath, projectRoot);
   if (tsConfigPath) {
@@ -96,18 +60,36 @@ function buildArgs(config: GenApiTypesConfig, projectRoot: string, apiDir: strin
   return args;
 }
 
-function runCli(cliCommand: CliCommand, args: string[], cwd: string) {
+function getOutputTarget(config: GenApiTypesConfig, projectRoot: string, apiDir: string) {
+  const outputDir = getOutputDir(config, projectRoot, apiDir);
+  const outputFile = config.outputFile || 'api-types.d.ts';
+
+  return path.resolve(outputDir, outputFile);
+}
+
+async function confirmOverwrite(outputTarget: string) {
+  if (!fs.existsSync(outputTarget)) {
+    return true;
+  }
+
+  const relativePath = vscode.workspace.asRelativePath(outputTarget, false);
+  const action = await vscode.window.showWarningMessage(
+    `类型文件已存在，继续生成会覆盖：${relativePath}`,
+    { modal: true },
+    '覆盖生成'
+  );
+
+  return action === '覆盖生成';
+}
+
+function runCli(cliPath: string, args: string[], cwd: string) {
   return new Promise<void>((resolve, reject) => {
-    const fullArgs = [...cliCommand.prefixArgs, ...args];
-    outputChannel.appendLine(`> ${cliCommand.command} ${fullArgs.map(arg => JSON.stringify(arg)).join(' ')}`);
+    outputChannel.appendLine(`> ${cliPath} ${args.map(arg => JSON.stringify(arg)).join(' ')}`);
     outputChannel.appendLine(`cwd: ${cwd}`);
 
-    const child = cp.spawn(cliCommand.command, fullArgs, {
+    const child = cp.spawn(cliPath, args, {
       cwd,
-      env: {
-        ...process.env,
-        ...cliCommand.env
-      }
+      env: process.env
     });
 
     child.stdout?.on('data', data => outputChannel.append(data.toString()));
@@ -124,7 +106,7 @@ function runCli(cliCommand: CliCommand, args: string[], cwd: string) {
   });
 }
 
-export async function setupGenerateApiTypesCommand(context: vscode.ExtensionContext, uri?: vscode.Uri) {
+export async function setupGenerateApiTypesCommand(_context: vscode.ExtensionContext, uri?: vscode.Uri) {
   const targetUri = getTargetUri(uri);
 
   if (!targetUri || targetUri.scheme !== 'file') {
@@ -148,7 +130,18 @@ export async function setupGenerateApiTypesCommand(context: vscode.ExtensionCont
   };
   const projectRoot = resolvePathOption(config.projectRoot, workspaceRoot) ?? workspaceRoot;
   const apiDir = path.dirname(targetUri.fsPath);
-  const cliCommand = getCliCommand(context, projectRoot);
+  const cliPath = getWorkspaceCliPath(projectRoot);
+  const outputTarget = getOutputTarget(config, projectRoot, apiDir);
+
+  if (!fs.existsSync(cliPath)) {
+    vscode.window.showErrorMessage(`当前项目未安装 gen-api-types，请先在项目根目录安装后再使用。`);
+    outputChannel.appendLine(`未找到业务项目 CLI：${cliPath}`);
+    return;
+  }
+
+  if (!await confirmOverwrite(outputTarget)) {
+    return;
+  }
 
   outputChannel.clear();
   outputChannel.show(true);
@@ -160,7 +153,7 @@ export async function setupGenerateApiTypesCommand(context: vscode.ExtensionCont
         title: '正在生成 API 返回类型...',
         cancellable: false
       },
-      () => runCli(cliCommand, buildArgs(config, projectRoot, apiDir), projectRoot)
+      () => runCli(cliPath, buildArgs(config, projectRoot, apiDir), projectRoot)
     );
     vscode.window.showInformationMessage('API 返回类型生成完成。');
   } catch (error) {
