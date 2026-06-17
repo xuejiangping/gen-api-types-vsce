@@ -1,7 +1,7 @@
 {
-  "name": "vscode-extension-webview-template",
-  "displayName": "VS Code Extension Webview Template",
-  "description": "一个保留 Vue + Vite webview 的 VS Code 插件开发模版。",
+  "name": "gen-api-types-vsce",
+  "displayName": "Gen API Types",
+  "description": "在 VS Code 中调用 gen-api-types 生成 API 返回类型。",
   "version": "0.0.1",
   "icon": "images/icon.png",
   "repository": {
@@ -17,7 +17,8 @@
   ],
   "activationEvents": [
     "onCommand:extension-template.hello",
-    "onCommand:extension-template.openWebview"
+    "onCommand:extension-template.openWebview",
+    "onCommand:gen-api-types.generateApiTypes"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -29,11 +30,57 @@
       {
         "command": "extension-template.openWebview",
         "title": "Extension Template: Open Webview"
+      },
+      {
+        "command": "gen-api-types.generateApiTypes",
+        "title": "生成 API 返回类型(gen-api-types)",
+        "category": "Gen API Types"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "gen-api-types.generateApiTypes",
+          "when": "resourceScheme == file && (resourceLangId == typescript || resourceLangId == typescriptreact)",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "gen-api-types.generateApiTypes",
+          "when": "resourceScheme == file && resourceExtname =~ /\\.(ts|tsx)$/",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
-      "title": "VS Code Extension Webview Template",
+      "title": "Gen API Types",
       "properties": {
+        "gen-api-types.projectRoot": {
+          "type": "string",
+          "default": "",
+          "description": "项目根目录。留空时使用当前 TypeScript 文件所在的工作区根目录。"
+        },
+        "gen-api-types.outputFile": {
+          "type": "string",
+          "default": "api-types.d.ts",
+          "description": "传给 gen-api-types 的 -O/--output_file 输出文件名。"
+        },
+        "gen-api-types.outputDir": {
+          "type": "string",
+          "default": "",
+          "description": "传给 gen-api-types 的 -o/--output_dir 输出目录。留空时使用项目根目录。"
+        },
+        "gen-api-types.tsConfigPath": {
+          "type": "string",
+          "default": "",
+          "description": "传给 gen-api-types 的 -t/--ts_config_path tsconfig.json 文件路径。留空时使用项目根目录下的 tsconfig.json。"
+        },
+        "gen-api-types.isExported": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否传入 --isExported，生成导出的类型声明。"
+        },
         "extension-template.webviewTitle": {
           "type": "string",
           "default": "Extension Template",
@@ -49,7 +96,7 @@
     "webview:dev": "pnpm -C webview dev",
     "webview:build": "pnpm -C webview build",
     "package": "pnpm run webview:build && webpack --mode production --devtool hidden-source-map",
-    "build": "vsce package -o release/vscode-extension-webview-template.vsix",
+    "build": "mkdir -p release && vsce package --no-dependencies -o release/gen-api-types-vsce.vsix",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
@@ -73,5 +120,8 @@
     "typescript": "^5.8.3",
     "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "gen-api-types": "^1.0.13"
   }
 }

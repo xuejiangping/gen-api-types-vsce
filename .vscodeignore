@@ -3,7 +3,6 @@
 .vscode/**
 .vscode-test/**
 out/**
-node_modules/**
 src/**
 .gitignore
 .yarnrc
@@ -23,3 +22,6 @@ webview/*.yaml
 !webview/dist/**
 
 *.env
+
+!node_modules/gen-api-types/src/**/*.ts
+!node_modules/gen-api-types/tsconfig.json
