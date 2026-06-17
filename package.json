@@ -102,7 +102,7 @@
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "publish": "vsce publish",
+    "publish": "vsce publish --no-dependencies",
     "publish:major": "pnpm version major && pnpm run publish",
     "publish:minor": "pnpm version minor && pnpm run publish",
     "publish:patch": "pnpm version patch && pnpm run publish"

@@ -3,6 +3,7 @@
 `gen-api-types-vsce` 是 [gen-api-types](https://github.com/xuejiangping/gen-api-types) 的 VS Code 辅助插件。
 
 它不内置 CLI，也不替代 `gen-api-types` 本身；插件的主要作用是把原本需要手写的命令参数整理成 VS Code 右键操作，方便在业务项目中快速生成 API 返回类型。
+![img](docs/images/image.png)
 
 ## 功能
 
