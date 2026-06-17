@@ -1,0 +1,25 @@
+# 插件打包生成 .vsix 文件时忽略的文件
+
+.vscode/**
+.vscode-test/**
+out/**
+node_modules/**
+src/**
+.gitignore
+.yarnrc
+webpack.config.js
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/eslint.config.mjs
+**/*.map
+**/*.ts
+**/.vscode-test.*
+pnpm-lock.yaml
+webview/src/**
+webview/node_modules/**
+webview/*.json
+webview/*.ts
+webview/*.yaml
+!webview/dist/**
+
+*.env

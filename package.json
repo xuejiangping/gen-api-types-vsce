@@ -1,0 +1,77 @@
+{
+  "name": "vscode-extension-webview-template",
+  "displayName": "VS Code Extension Webview Template",
+  "description": "一个保留 Vue + Vite webview 的 VS Code 插件开发模版。",
+  "version": "0.0.1",
+  "icon": "images/icon.png",
+  "repository": {
+    "url": "https://github.com/your-name/vscode-extension-webview-template.git"
+  },
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.70.0",
+    "node": ">=20.0.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension-template.hello",
+    "onCommand:extension-template.openWebview"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension-template.hello",
+        "title": "Extension Template: Hello"
+      },
+      {
+        "command": "extension-template.openWebview",
+        "title": "Extension Template: Open Webview"
+      }
+    ],
+    "configuration": {
+      "title": "VS Code Extension Webview Template",
+      "properties": {
+        "extension-template.webviewTitle": {
+          "type": "string",
+          "default": "Extension Template",
+          "description": "Webview 面板标题示例配置。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run webview:build && webpack",
+    "watch": "webpack --watch",
+    "webview:dev": "pnpm -C webview dev",
+    "webview:build": "pnpm -C webview build",
+    "package": "pnpm run webview:build && webpack --mode production --devtool hidden-source-map",
+    "build": "vsce package -o release/vscode-extension-webview-template.vsix",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "publish": "vsce publish",
+    "publish:major": "pnpm version major && pnpm run publish",
+    "publish:minor": "pnpm version minor && pnpm run publish",
+    "publish:patch": "pnpm version patch && pnpm run publish"
+  },
+  "devDependencies": {
+    "@types/node": "20.x",
+    "@types/vscode": "^1.70.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.1",
+    "eslint": "^9.25.1",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1"
+  }
+}

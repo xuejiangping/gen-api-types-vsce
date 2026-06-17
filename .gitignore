@@ -1,0 +1,10 @@
+out
+dist
+node_modules
+.vscode-test/
+release
+*.vsix
+
+*.env
+webview/dist
+webview/node_modules

@@ -1,0 +1,55 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "extension: watch",
+			"type": "npm",
+			"script": "watch",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "webpack",
+				"fileLocation": "absolute",
+				"pattern": {
+					"regexp": "^$"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "Compiler starting",
+					"endsPattern": "compiled (?:successfully|with [0-9]+ errors?)"
+				}
+			},
+			"presentation": {
+				"reveal": "silent",
+				"group": "watchers"
+			}
+		},
+		{
+			"label": "webview: watch",
+			"type": "shell",
+			"command": "pnpm --dir webview run build && echo WEBVIEW_BUILD_READY && pnpm --dir webview exec vite build --watch --minify=false --clearScreen=false",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "vite",
+				"fileLocation": "absolute",
+				"pattern": {
+					"regexp": "^$"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "vite.*building|building for production",
+					"endsPattern": "^WEBVIEW_BUILD_READY$"
+				}
+			},
+			"presentation": {
+				"reveal": "silent",
+				"group": "watchers"
+			}
+		},
+		{
+			"label": "dev: watch",
+			"dependsOn": ["extension: watch", "webview: watch"],
+			"dependsOrder": "parallel",
+			"problemMatcher": []
+		}
+	]
+}
